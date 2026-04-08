@@ -2,192 +2,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project CCT Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f1f5f9; color: #1e293b; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .hero { background: linear-gradient(135deg, #1e3a5f 0%, #0ea5e9 100%); color: white; padding: 60px 20px; text-align: center; margin-bottom: 30px; }
-        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; }
-        .upload-box { border: 2px dashed #06b6d4; border-radius: 8px; padding: 30px; text-align: center; cursor: pointer; background-color: #f0f9fa; }
-        .table-container { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th { background-color: #1e293b; color: white; padding: 12px; border: 1px solid #334155; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; }
+        .hero { background: #1e3a5f; color: white; padding: 40px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
+        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #1e3a5f; color: white; padding: 12px; border: 1px solid #334155; }
         td { padding: 12px; border: 1px solid #e2e8f0; text-align: center; }
-        .category-col { text-align: left; font-weight: 600; background-color: #f8fafc; }
-        .total-cell { background-color: #0ea5e9; font-weight: bold; color: white; }
-        .indicator-total { background-color: #dbeafe; font-weight: bold; }
-        .subtotal-row { background-color: #1e293b; color: white; font-weight: bold; }
-        .subtotal-row td { border-color: #334155; }
+        .category-col { text-align: left; font-weight: bold; background: #f8fafc; }
+        .total-cell { background: #0ea5e9; color: white; font-weight: bold; }
+        .subtotal-row { background: #1e293b; color: white; font-weight: bold; }
+        .indicator-total { background: #dbeafe; font-weight: bold; color: #1e293b; }
+        .admin-zone { border: 2px dashed #0ea5e9; padding: 20px; background: #f0f9ff; margin-top: 50px; border-radius: 8px; }
+        textarea { width: 100%; height: 80px; margin-top: 10px; display: block; font-family: monospace; }
+        .btn-copy { background: #0ea5e9; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
+
     <div class="hero">
         <h1>Project CCT Dashboard</h1>
-        <p>Results are saved automatically in your browser memory.</p>
+        <p>Consolidated Analysis Summary</p>
     </div>
 
-    <div class="container">
-        <div id="dashboardSection" style="display: none;">
-            <div class="card">
-                <div class="table-container">
-                    <table id="dataTable">
-                        <thead id="tableHead"></thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                </div>
-                <button style="background: #fee2e2; color: #991b1b; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; margin-top: 20px;" onclick="resetDashboard()">Reset & Clear All Data</button>
-            </div>
+    <div id="viewerSection" class="card">
+        <div id="tableContainer">
+            <p style="text-align:center; color:#64748b;">Loading official results...</p>
         </div>
+    </div>
 
-        <div class="card">
-            <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-                <h3>Click to Upload Survey CSV</h3>
-                <p>Required: Channel, Indicator, Q11_01, Q11_02, Q11_03</p>
-            </div>
-            <input type="file" id="fileInput" accept=".csv" style="display:none" onchange="handleFileUpload(event)">
-            <div id="status" style="text-align:center; margin-top:10px; color:#0ea5e9; font-weight:bold;"></div>
+    <div class="admin-zone">
+        <h3>Admin: Update Data</h3>
+        <p>1. Upload CSV to calculate.</p>
+        <input type="file" id="fileInput" accept=".csv" onchange="adminUpload(event)">
+
+        <div id="copyInstructions" style="display:none; margin-top:20px;">
+            <p>2. Click to copy code, then paste into your file.</p>
+            <textarea id="jsonOutput" readonly></textarea>
+            <button class="btn-copy" onclick="copyToClipboard()">Copy Code</button>
+            <span id="copyStatus" style="margin-left:10px; color:green;"></span>
         </div>
     </div>
 
     <script>
-        let dashboardData = null;
+        // --- ADMIN: PASTE YOUR COPIED CODE BETWEEN THE QUOTES BELOW ---
+        const publishedData = '{"segments":["CATI | Indicator 1","CATI | Indicator 2","CATI | Indicator 3","CAWI | Indicator 1","CAWI | Indicator 2","CAWI | Indicator 3"],"categories":["Connecting Water","Getting Building permits","Getting Electricity","Getting Land Use Rights","Obtaining Wayleaves","Obtaining a Business License","Obtaining an Informal Trading Permit","Revenue Clearance","Transferring of Public Land"],"counts":{"Obtaining a Business License":{"CAWI | Indicator 1":2,"CATI | Indicator 1":41,"CATI | Indicator 2":5,"CATI | Indicator 3":2},"Getting Land Use Rights":{"CAWI | Indicator 2":4,"CAWI | Indicator 1":1,"CAWI | Indicator 3":6,"CATI | Indicator 3":4,"CATI | Indicator 1":4},"Transferring of Public Land":{"CAWI | Indicator 2":1,"CAWI | Indicator 3":1,"CATI | Indicator 3":5,"CATI | Indicator 1":6},"Getting Building permits":{"CAWI | Indicator 2":4,"CAWI | Indicator 1":18,"CAWI | Indicator 3":9,"CATI | Indicator 3":3,"CATI | Indicator 1":7,"CATI | Indicator 2":1},"Getting Electricity":{"CAWI | Indicator 2":1,"CAWI | Indicator 3":7,"CATI | Indicator 1":3,"CATI | Indicator 3":3,"CATI | Indicator 2":4},"Connecting Water":{"CAWI | Indicator 2":1,"CAWI | Indicator 3":7,"CATI | Indicator 3":3,"CATI | Indicator 2":3,"CATI | Indicator 1":1},"Obtaining Wayleaves":{"CAWI | Indicator 2":1,"CAWI | Indicator 1":1,"CAWI | Indicator 3":7,"CATI | Indicator 1":7,"CATI | Indicator 3":1,"CATI | Indicator 2":1},"Obtaining an Informal Trading Permit":{"CAWI | Indicator 1":6,"CAWI | Indicator 3":1,"CATI | Indicator 1":53,"CATI | Indicator 2":5,"CATI | Indicator 3":1},"Revenue Clearance":{"CAWI | Indicator 3":1,"CATI | Indicator 3":2,"CATI | Indicator 2":1}},"columnTotals":{"CAWI | Indicator 1":28,"CAWI | Indicator 2":12,"CAWI | Indicator 3":39,"CATI | Indicator 1":122,"CATI | Indicator 2":20,"CATI | Indicator 3":24}}';
 
         window.onload = () => {
-            const saved = localStorage.getItem('cctDashboardData');
-            if (saved) {
-                dashboardData = JSON.parse(saved);
-                renderTable();
+            if (publishedData && publishedData !== '') {
+                renderTable(JSON.parse(publishedData));
+            } else {
+                document.getElementById('tableContainer').innerHTML = "<p style='text-align:center;'>No live data published yet.</p>";
             }
         };
 
-        function handleFileUpload(event) {
+        function adminUpload(event) {
             const file = event.target.files[0];
-            if (!file) return;
-            document.getElementById('status').innerText = "Processing...";
             const reader = new FileReader();
             reader.onload = (e) => {
-                const csv = e.target.result;
-                const rows = csv.trim().split('\n').map(r => r.split(',').map(c => c.trim()));
+                const text = e.target.result;
+                const rows = text.split('\n').map(r => r.split(',').map(c => c.trim()));
                 const headers = rows[0];
                 const cleanRows = rows.slice(1).map(row => {
                     const obj = {};
                     headers.forEach((h, i) => obj[h] = row[i]);
                     return obj;
                 });
-                calculateResults(headers, cleanRows);
-                document.getElementById('status').innerText = "Update Successful!";
+
+                const colChan = headers.find(h => h.toLowerCase() === 'channel');
+                const colInd = headers.find(h => h.toLowerCase() === 'indicator');
+                const qCols = headers.filter(h => h.toLowerCase().startsWith('q11'));
+                const segments = new Set();
+                const categories = new Set();
+                const counts = {};
+
+                cleanRows.forEach(row => {
+                    const seg = `${row[colChan]} | ${row[colInd]}`;
+                    if (row[colChan]) segments.add(seg);
+                    qCols.forEach(q => {
+                        let val = row[q];
+                        if (val && val !== '' && val.toLowerCase() !== 'nan') {
+                            categories.add(val);
+                            if (!counts[val]) counts[val] = {};
+                            counts[val][seg] = (counts[val][seg] || 0) + 1;
+                        }
+                    });
+                });
+
+                const columnTotals = {};
+                segments.forEach(seg => {
+                    columnTotals[seg] = Array.from(categories).reduce((sum, cat) => sum + (counts[cat]?.[seg] || 0), 0);
+                });
+
+                const results = {
+                    segments: Array.from(segments).sort(),
+                    categories: Array.from(categories).sort(),
+                    counts: counts,
+                    columnTotals: columnTotals
+                };
+
+                document.getElementById('copyInstructions').style.display = 'block';
+                document.getElementById('jsonOutput').value = JSON.stringify(results);
             };
             reader.readAsText(file);
         }
 
-        function calculateResults(headers, rows) {
-            const colChan = headers.find(h => h.toLowerCase() === 'channel');
-            const colInd = headers.find(h => h.toLowerCase() === 'indicator');
-            const qCols = headers.filter(h => h.toLowerCase().startsWith('q11'));
+        function renderTable(data) {
+            const { segments, categories, counts, columnTotals } = data;
+            const indicators = [...new Set(segments.map(s => s.split(' | ')[1]))].sort();
 
-            const segments = new Set();
-            const categories = new Set();
-            const counts = {};
+            let html = '<table><thead><tr><th rowspan="2">Category</th>';
+            indicators.forEach(ind => html += `<th colspan="3">${ind}</th>`);
+            html += '<th colspan="3" class="total-cell">GRAND TOTAL</th></tr><tr>';
+            indicators.forEach(() => html += '<th>CATI</th><th>CAWI</th><th class="indicator-total">Total</th>');
+            html += '<th>CATI</th><th>CAWI</th><th class="total-cell">Total</th></tr></thead><tbody>';
 
-            rows.forEach(row => {
-                const seg = `${row[colChan]} | ${row[colInd]}`;
-                if (row[colChan]) segments.add(seg);
-                qCols.forEach(q => {
-                    let val = row[q];
-                    if (val && val !== '' && val.toLowerCase() !== 'nan') {
-                        categories.add(val);
-                        if (!counts[val]) counts[val] = {};
-                        counts[val][seg] = (counts[val][seg] || 0) + 1;
-                    }
-                });
-            });
-
-            const columnTotals = {};
-            let grandTotal = 0;
-            Array.from(categories).forEach(cat => {
-                Array.from(segments).forEach(seg => {
-                    const v = counts[cat]?.[seg] || 0;
-                    columnTotals[seg] = (columnTotals[seg] || 0) + v;
-                    grandTotal += v;
-                });
-            });
-
-            dashboardData = {
-                segments: Array.from(segments).sort(),
-                categories: Array.from(categories).sort(),
-                counts, columnTotals, grandTotal
-            };
-            localStorage.setItem('cctDashboardData', JSON.stringify(dashboardData));
-            renderTable();
-        }
-
-        function renderTable() {
-            if (!dashboardData) return;
-            document.getElementById('dashboardSection').style.display = 'block';
-
-            const { segments, categories, counts, columnTotals, grandTotal } = dashboardData;
-            const indMap = new Map();
-            segments.forEach(s => {
-                const i = s.split(' | ')[1];
-                if(!indMap.has(i)) indMap.set(i, []);
-                indMap.get(i).push(s);
-            });
-            const indicators = Array.from(indMap.keys()).sort();
-
-            // Headers
-            let h1 = '<tr><th rowspan="2" class="category-col">Service Category</th>';
-            let h2 = '<tr>';
-            indicators.forEach(ind => {
-                h1 += `<th colspan="3">${ind}</th>`;
-                h2 += '<th>CATI</th><th>CAWI</th><th class="indicator-total">Total</th>';
-            });
-            h1 += '<th colspan="3" class="total-cell">GRAND TOTAL</th></tr>';
-            h2 += '<th>CATI</th><th>CAWI</th><th class="total-cell">Total</th></tr>';
-            document.getElementById('tableHead').innerHTML = h1 + h2;
-
-            // Body
-            let body = '';
-            categories.forEach(cat => {
-                let rowSumCATI = 0;
-                let rowSumCAWI = 0;
-                let row = `<tr><td class="category-col">${cat}</td>`;
-                indicators.forEach(ind => {
-                    const segs = indMap.get(ind);
-                    const cati = segs.filter(s => s.includes('CATI')).reduce((a, b) => a + (counts[cat]?.[b] || 0), 0);
-                    const cawi = segs.filter(s => s.includes('CAWI')).reduce((a, b) => a + (counts[cat]?.[b] || 0), 0);
-                    rowSumCATI += cati;
-                    rowSumCAWI += cawi;
-                    row += `<td>${cati}</td><td>${cawi}</td><td class="indicator-total">${cati+cawi}</td>`;
-                });
-                row += `<td>${rowSumCATI}</td><td>${rowSumCAWI}</td><td class="total-cell">${rowSumCATI + rowSumCAWI}</td></tr>`;
-                body += row;
-            });
-
-            // --- ADDING SUBTOTAL ROW HERE ---
-            let subtotalRow = '<tr class="subtotal-row"><td class="category-col">TOTAL MENTIONS</td>';
             let grandCATI = 0;
             let grandCAWI = 0;
 
-            indicators.forEach(ind => {
-                const segs = indMap.get(ind);
-                const catiT = segs.filter(s => s.includes('CATI')).reduce((a, b) => a + (columnTotals[b] || 0), 0);
-                const cawiT = segs.filter(s => s.includes('CAWI')).reduce((a, b) => a + (columnTotals[b] || 0), 0);
-                grandCATI += catiT;
-                grandCAWI += cawiT;
-                subtotalRow += `<td>${catiT}</td><td>${cawiT}</td><td style="background:#0ea5e9;">${catiT + cawiT}</td>`;
+            categories.forEach(cat => {
+                let rowSumCATI = 0;
+                let rowSumCAWI = 0;
+                html += `<tr><td class="category-col">${cat}</td>`;
+                indicators.forEach(ind => {
+                    const cati = counts[cat]?.[`CATI | ${ind}`] || 0;
+                    const cawi = counts[cat]?.[`CAWI | ${ind}`] || 0;
+                    rowSumCATI += cati;
+                    rowSumCAWI += cawi;
+                    html += `<td>${cati}</td><td>${cawi}</td><td class="indicator-total">${cati+cawi}</td>`;
+                });
+                html += `<td>${rowSumCATI}</td><td>${rowSumCAWI}</td><td class="total-cell">${rowSumCATI+rowSumCAWI}</td></tr>`;
+                grandCATI += rowSumCATI;
+                grandCAWI += rowSumCAWI;
             });
-            subtotalRow += `<td>${grandCATI}</td><td>${grandCAWI}</td><td class="total-cell">${grandTotal}</td></tr>`;
-            
-            document.getElementById('tableBody').innerHTML = body + subtotalRow;
+
+            // SUBTOTAL ROW
+            html += '<tr class="subtotal-row"><td class="category-col" style="background:#1e293b; color:white;">TOTAL MENTIONS</td>';
+            indicators.forEach(ind => {
+                const catiT = columnTotals[`CATI | ${ind}`] || 0;
+                const cawiT = columnTotals[`CAWI | ${ind}`] || 0;
+                html += `<td>${catiT}</td><td>${cawiT}</td><td style="background:#0ea5e9;">${catiT+cawiT}</td>`;
+            });
+            html += `<td>${grandCATI}</td><td>${grandCAWI}</td><td class="total-cell" style="background:#fff; color:#1e3a5f;">${grandCATI+grandCAWI}</td></tr>`;
+
+            html += '</tbody></table>';
+            document.getElementById('tableContainer').innerHTML = html;
         }
 
-        function resetDashboard() {
-            if(confirm("Clear everything?")) {
-                localStorage.removeItem('cctDashboardData');
-                location.reload();
-            }
+        function copyToClipboard() {
+            const copyText = document.getElementById("jsonOutput");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            document.getElementById('copyStatus').innerText = "Copied!";
         }
     </script>
 </body>
