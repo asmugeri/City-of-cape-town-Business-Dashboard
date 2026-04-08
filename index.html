@@ -8,13 +8,14 @@
         body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; }
         .hero { background: #1e3a5f; color: white; padding: 40px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
         .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9em; }
         th { background: #1e3a5f; color: white; padding: 12px; border: 1px solid #334155; }
         td { padding: 12px; border: 1px solid #e2e8f0; text-align: center; }
         .category-col { text-align: left; font-weight: bold; background: #f8fafc; }
         .total-cell { background: #0ea5e9; color: white; font-weight: bold; }
         .subtotal-row { background: #1e293b; color: white; font-weight: bold; }
-        .indicator-total { background: #dbeafe; font-weight: bold; color: #1e293b; }
+        .respondent-row { background: #f1f5f9; color: #1e3a5f; font-weight: bold; border-top: 2px solid #1e3a5f; }
+        .indicator-total { background: #dbeafe; font-weight: bold; color: #1e3a5f; }
         .admin-zone { border: 2px dashed #0ea5e9; padding: 20px; background: #f0f9ff; margin-top: 50px; border-radius: 8px; }
         textarea { width: 100%; height: 80px; margin-top: 10px; display: block; font-family: monospace; }
         .btn-copy { background: #0ea5e9; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
@@ -48,7 +49,8 @@
 
     <script>
         // --- ADMIN: PASTE YOUR COPIED CODE BETWEEN THE QUOTES BELOW ---
-        const publishedData = '{"segments":["CATI | Indicator 1","CATI | Indicator 2","CATI | Indicator 3","CAWI | Indicator 1","CAWI | Indicator 2","CAWI | Indicator 3"],"categories":["Connecting Water","Getting Building permits","Getting Electricity","Getting Land Use Rights","Obtaining Wayleaves","Obtaining a Business License","Obtaining an Informal Trading Permit","Revenue Clearance","Transferring of Public Land"],"counts":{"Getting Land Use Rights":{"CAWI | Indicator 2":4,"CAWI | Indicator 3":7,"CAWI | Indicator 1":1,"CATI | Indicator 1":7,"CATI | Indicator 3":4},"Getting Building permits":{"CAWI | Indicator 2":4,"CAWI | Indicator 3":9,"CAWI | Indicator 1":18,"CATI | Indicator 1":8,"CATI | Indicator 2":2,"CATI | Indicator 3":3},"Obtaining a Business License":{"CAWI | Indicator 1":2,"CATI | Indicator 1":42,"CATI | Indicator 2":5,"CATI | Indicator 3":2},"Transferring of Public Land":{"CAWI | Indicator 3":1,"CAWI | Indicator 2":1,"CATI | Indicator 1":8,"CATI | Indicator 3":5},"Getting Electricity":{"CAWI | Indicator 3":8,"CAWI | Indicator 2":1,"CATI | Indicator 1":7,"CATI | Indicator 2":4,"CATI | Indicator 3":3},"Obtaining Wayleaves":{"CAWI | Indicator 3":7,"CAWI | Indicator 1":1,"CAWI | Indicator 2":1,"CATI | Indicator 1":7,"CATI | Indicator 2":1,"CATI | Indicator 3":1},"Connecting Water":{"CAWI | Indicator 3":8,"CAWI | Indicator 2":1,"CATI | Indicator 1":1,"CATI | Indicator 2":3,"CATI | Indicator 3":3},"Obtaining an Informal Trading Permit":{"CAWI | Indicator 1":6,"CAWI | Indicator 3":1,"CATI | Indicator 1":53,"CATI | Indicator 2":5,"CATI | Indicator 3":1},"Revenue Clearance":{"CAWI | Indicator 3":1,"CATI | Indicator 2":2,"CATI | Indicator 3":2}},"columnTotals":{"CAWI | Indicator 2":12,"CAWI | Indicator 1":28,"CAWI | Indicator 3":42,"CATI | Indicator 1":133,"CATI | Indicator 2":22,"CATI | Indicator 3":24}}';
+        const publishedData = '{"segments":["CATI | Indicator 1","CATI | Indicator 2","CATI | Indicator 3","CAWI | Indicator 1","CAWI | Indicator 2","CAWI | Indicator 3"],"categories":["Connecting Water","Getting Building permits","Getting Electricity","Getting Land Use Rights","Obtaining Wayleaves","Obtaining a Business License","Obtaining an Informal Trading Permit","Revenue Clearance","Transferring of Public Land"],"counts":{"Getting Land Use Rights":{"CAWI | Indicator 2":4,"CAWI | Indicator 3":7,"CAWI | Indicator 1":1,"CATI | Indicator 1":7,"CATI | Indicator 3":4},"Getting Building permits":{"CAWI | Indicator 2":4,"CAWI | Indicator 3":9,"CAWI | Indicator 1":18,"CATI | Indicator 1":8,"CATI | Indicator 2":2,"CATI | Indicator 3":3},"Obtaining a Business License":{"CAWI | Indicator 1":2,"CATI | Indicator 1":42,"CATI | Indicator 2":5,"CATI | Indicator 3":2},"Transferring of Public Land":{"CAWI | Indicator 3":1,"CAWI | Indicator 2":1,"CATI | Indicator 1":8,"CATI | Indicator 3":5},"Getting Electricity":{"CAWI | Indicator 3":8,"CAWI | Indicator 2":1,"CATI | Indicator 1":7,"CATI | Indicator 2":4,"CATI | Indicator 3":3},"Obtaining Wayleaves":{"CAWI | Indicator 3":7,"CAWI | Indicator 1":1,"CAWI | Indicator 2":1,"CATI | Indicator 1":7,"CATI | Indicator 2":1,"CATI | Indicator 3":1},"Connecting Water":{"CAWI | Indicator 3":8,"CAWI | Indicator 2":1,"CATI | Indicator 1":1,"CATI | Indicator 2":3,"CATI | Indicator 3":3},"Obtaining an Informal Trading Permit":{"CAWI | Indicator 1":6,"CAWI | Indicator 3":1,"CATI | Indicator 1":53,"CATI | Indicator 2":5,"CATI | Indicator 3":1},"Revenue Clearance":{"CAWI | Indicator 3":1,"CATI | Indicator 2":2,"CATI | Indicator 3":2}},"columnTotals":{"CAWI | Indicator 2":12,"CAWI | Indicator 1":28,"CAWI | Indicator 3":42,"CATI | Indicator 1":133,"CATI | Indicator 2":22,"CATI | Indicator 3":24},"uniqueRespondents":{"CAWI | Indicator 2":6,"CAWI | Indicator 1":28,"CAWI | Indicator 3":14,"CATI | Indicator 1":133,"CATI | Indicator 2":11,"CATI | Indicator 3":8}}';
+
         window.onload = () => {
             if (publishedData && publishedData !== '') {
                 renderTable(JSON.parse(publishedData));
@@ -64,7 +66,7 @@
                 const text = e.target.result;
                 const rows = text.split('\n').map(r => r.split(',').map(c => c.trim()));
                 const headers = rows[0];
-                const cleanRows = rows.slice(1).map(row => {
+                const cleanRows = rows.slice(1).filter(r => r.length > 1).map(row => {
                     const obj = {};
                     headers.forEach((h, i) => obj[h] = row[i]);
                     return obj;
@@ -73,13 +75,19 @@
                 const colChan = headers.find(h => h.toLowerCase() === 'channel');
                 const colInd = headers.find(h => h.toLowerCase() === 'indicator');
                 const qCols = headers.filter(h => h.toLowerCase().startsWith('q11'));
+
                 const segments = new Set();
                 const categories = new Set();
                 const counts = {};
+                const uniqueRespondents = {}; // Track unique counts per segment
 
                 cleanRows.forEach(row => {
                     const seg = `${row[colChan]} | ${row[colInd]}`;
-                    if (row[colChan]) segments.add(seg);
+                    if (row[colChan]) {
+                        segments.add(seg);
+                        uniqueRespondents[seg] = (uniqueRespondents[seg] || 0) + 1;
+                    }
+
                     qCols.forEach(q => {
                         let val = row[q];
                         if (val && val !== '' && val.toLowerCase() !== 'nan') {
@@ -99,7 +107,8 @@
                     segments: Array.from(segments).sort(),
                     categories: Array.from(categories).sort(),
                     counts: counts,
-                    columnTotals: columnTotals
+                    columnTotals: columnTotals,
+                    uniqueRespondents: uniqueRespondents
                 };
 
                 document.getElementById('copyInstructions').style.display = 'block';
@@ -109,10 +118,10 @@
         }
 
         function renderTable(data) {
-            const { segments, categories, counts, columnTotals } = data;
+            const { segments, categories, counts, columnTotals, uniqueRespondents } = data;
             const indicators = [...new Set(segments.map(s => s.split(' | ')[1]))].sort();
 
-            let html = '<table><thead><tr><th rowspan="2">Category</th>';
+            let html = '<table><thead><tr><th rowspan="2">Service Category</th>';
             indicators.forEach(ind => html += `<th colspan="3">${ind}</th>`);
             html += '<th colspan="3" class="total-cell">GRAND TOTAL</th></tr><tr>';
             indicators.forEach(() => html += '<th>CATI</th><th>CAWI</th><th class="indicator-total">Total</th>');
@@ -121,6 +130,7 @@
             let grandCATI = 0;
             let grandCAWI = 0;
 
+            // MAIN CATEGORY ROWS
             categories.forEach(cat => {
                 let rowSumCATI = 0;
                 let rowSumCAWI = 0;
@@ -137,14 +147,31 @@
                 grandCAWI += rowSumCAWI;
             });
 
-            // SUBTOTAL ROW
+            // TOTAL MENTIONS ROW
             html += '<tr class="subtotal-row"><td class="category-col" style="background:#1e293b; color:white;">TOTAL MENTIONS</td>';
+            let mentionsCATI = 0;
+            let mentionsCAWI = 0;
             indicators.forEach(ind => {
                 const catiT = columnTotals[`CATI | ${ind}`] || 0;
                 const cawiT = columnTotals[`CAWI | ${ind}`] || 0;
+                mentionsCATI += catiT;
+                mentionsCAWI += cawiT;
                 html += `<td>${catiT}</td><td>${cawiT}</td><td style="background:#0ea5e9;">${catiT+cawiT}</td>`;
             });
-            html += `<td>${grandCATI}</td><td>${grandCAWI}</td><td class="total-cell" style="background:#fff; color:#1e3a5f;">${grandCATI+grandCAWI}</td></tr>`;
+            html += `<td>${mentionsCATI}</td><td>${mentionsCAWI}</td><td class="total-cell" style="background:#fff; color:#1e3a5f;">${mentionsCATI+mentionsCAWI}</td></tr>`;
+
+            // NEW: UNDUPLICATED RESPONDENTS ROW
+            html += '<tr class="respondent-row"><td class="category-col">TOTAL RESPONDENTS (UNDUPLICATED)</td>';
+            let totalRespCATI = 0;
+            let totalRespCAWI = 0;
+            indicators.forEach(ind => {
+                const catiR = uniqueRespondents[`CATI | ${ind}`] || 0;
+                const cawiR = uniqueRespondents[`CAWI | ${ind}`] || 0;
+                totalRespCATI += catiR;
+                totalRespCAWI += cawiR;
+                html += `<td>${catiR}</td><td>${cawiR}</td><td style="background:#cbd5e1;">${catiR+cawiR}</td>`;
+            });
+            html += `<td>${totalRespCATI}</td><td>${totalRespCAWI}</td><td class="total-cell" style="background:#94a3b8;">${totalRespCATI+totalRespCAWI}</td></tr>`;
 
             html += '</tbody></table>';
             document.getElementById('tableContainer').innerHTML = html;
